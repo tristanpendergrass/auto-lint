@@ -25,7 +25,8 @@ function buildErrorsList(cb) {
         list.push({
           file: file,
           message: line,
-          line: line.match(/\[(\d+),/)[1]
+          line: line.match(/\[(\d+),/)[1],
+          column: line.match(/\[\d+,(\d+)/)[1]
         });
       }
     }
@@ -37,8 +38,8 @@ function buildErrorsList(cb) {
 }
 
 // open vim to the specified file and line number
-function openVim(fileName, lineNumber, cb) {
-  var command = 'mvim +' + lineNumber + ' ' + fileName;
+function openVim(fileName, lineNumber, columnNumber, cb) {
+  var command = 'mvim "+call cursor(' + lineNumber + ', ' + columnNumber + ')" ' + fileName;
   exec(command, cb);
 }
 
@@ -58,7 +59,7 @@ function queryUser(errorList) {
 
     rl.question(question, function(res) {
       if (res === 'e' || res === '') {
-        openVim(error.file, error.line, function() {
+        openVim(error.file, error.line, error.column, function() {
           errorList.pop();
           queryUser(errorList);
         });
