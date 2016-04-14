@@ -46,6 +46,7 @@ function openVim(fileName, lineNumber, columnNumber, cb) {
 function queryUser(errorList) {
   if (errorList.length === 0) {
     console.log('Linting is complete!');
+    rl.close();
   } else {
     var error = errorList[errorList.length - 1];
     console.log('');
